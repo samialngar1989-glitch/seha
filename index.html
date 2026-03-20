@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صحة - نظام الاستعلام الذكي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --seha-blue: #2c5ba7; }
+        body { font-family: 'Cairo', sans-serif; background-color: white; }
+        .page-section { display: none; }
+        .active { display: block; }
+        
+        /* تصميم التقرير للطباعة */
+        #printablePage { 
+            width: 210mm; height: 297mm; margin: 0 auto;
+            background-image: url('https://lh3.googleusercontent.com/d/1CKQiU4AqhKnHQ-TthWxfupVcgtV3zQyj');
+            background-size: 100% 100%; position: relative; padding-top: 60mm;
+        }
+        .seha-table { width: 90%; margin: 0 auto; border-collapse: collapse; border: 1px solid #cbd5e1; }
+        .seha-table td { border: 1px solid #cbd5e1; padding: 10px; font-size: 12px; font-weight: bold; color: #2b4c7e; text-align: center; }
+        .bg-navy { background-color: #002349; color: white !important; }
+
+        @media print {
+            .no-print { display: none !important; }
+            #printablePage { display: block !important; margin: 0; shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="searchPage" class="page-section active no-print">
+        <header class="p-6 flex justify-between items-center shadow-sm">
+            <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" class="h-16">
+            <div class="text-blue-600 text-2xl">☰</div>
+        </header>
+
+        <main class="max-w-md mx-auto mt-16 px-6 text-center">
+            <h1 class="text-3xl font-bold text-[#2c5ba7] mb-4">الإجازات المرضية</h1>
+            <p class="text-gray-500 text-sm mb-10">استعلم عن حالة إجازتك المرضية من خلال إدخال البيانات التالية</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="inputLeaveID" placeholder="رمز الخدمة (Leave ID)" class="w-full p-4 border rounded-xl text-right outline-none focus:border-blue-500">
+                <input type="text" id="inputNationalID" placeholder="رقم الهوية / الإقامة" class="w-full p-4 border rounded-xl text-right outline-none focus:border-blue-500">
+                <button onclick="searchInSheets()" id="searchBtn" class="w-full bg-[#3267b2] text-white p-4 rounded-xl font-bold text-lg hover:bg-blue-800 transition-all">استعلام</button>
+                <p id="errorMsg" class="text-red-500 text-sm hidden">عذراً، لم يتم العثور على بيانات مطابقة.</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="reportPage" class="page-section">
+        <div class="no-print p-4 bg-slate-800 text-white flex justify-between">
+            <button onclick="location.reload()" class="bg-slate-600 px-4 py-1 rounded">بحث جديد</button>
+            <button onclick="window.print()" class="bg-green-600 px-4 py-1 rounded">طباعة التقرير</button>
+        </div>
+
+        <div id="printablePage">
+            <table class="seha-table">
+                <tr><td>رمز الإجازة</td><td colspan="2" id="resLeaveID" class="font-mono"></td><td>Leave ID</td></tr>
+                <tr class="bg-navy"><td>مدة الإجازة</td><td id="resDurAr"></td><td id="resDurEn" class="font-mono text-[10px]"></td><td>Duration</td></tr>
+                <tr><td>الاسم</td><td id="resNameAr"></td><td id="resNameEn" class="font-mono text-[10px]"></td><td>Name</td></tr>
+                <tr class="bg-gray-100"><td>رقم الهوية</td><td colspan="2" id="resNationalID" class="text-lg"></td><td>ID Number</td></tr>
+                <tr><td>الطبيب المعالج</td><td colspan="2" id="resDoctor"></td><td>Physician</td></tr>
+            </table>
+
+            <div class="absolute bottom-[25mm] left-[15mm] w-[45%] flex flex-col items-center">
+                <img id="resQR" class="w-32 mb-2">
+                <span class="text-[10px] font-bold">يرجى التأكد من زيارة موقع منصة صحة الرسمي للتحقق</span>
+                <span class="text-[9px] underline text-blue-900 mt-2 italic">www.seha.sa/#inquiries/slenquiry</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // رابط الجدول الخاص بك (بصيغة CSV للقراءة)
+        const sheetURL = "https://cors-anywhere.herokuapp.com/https://docs.google.com/spreadsheets/d/1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg/gviz/tq?tqx=out:csv";
+
+
+        async function searchInSheets() {
+            const lID = document.getElementById('inputLeaveID').value.trim();
+            const nID = document.getElementById('inputNationalID').value.trim();
+            const btn = document.getElementById('searchBtn');
+            const error = document.getElementById('errorMsg');
+
+            if(!lID || !nID) { alert("يرجى إدخال كافة البيانات"); return; }
+
+            btn.innerText = "جاري البحث...";
+            btn.disabled = true;
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch(sheetURL);
+                const data = await response.text();
+                // تحويل البيانات من نص إلى مصفوفة
+                const rows = data.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '')));
+
+                // البحث عن الصف المطابق (LeaveID في العمود A و NationalID في العمود B)
+                const found = rows.find(r => r[0] === lID && r[1] === nID);
+
+                if (found) {
+                    // تعبئة البيانات في التقرير
+                    document.getElementById('resLeaveID').innerText = found[0];
+                    document.getElementById('resNationalID').innerText = found[1];
+                    document.getElementById('resNameAr').innerText = found[2];
+                    document.getElementById('resNameEn').innerText = found[3];
+                    document.getElementById('resDurAr').innerText = found[4];
+                    document.getElementById('resDurEn').innerText = found[5];
+                    document.getElementById('resDoctor').innerText = found[6];
+                    
+                    // توليد الباركود
+                    document.getElementById('resQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('SL_'+found[0])}`;
+
+                    // الانتقال لصفحة التقرير
+                    document.getElementById('searchPage').classList.remove('active');
+                    document.getElementById('reportPage').classList.add('active');
+                } else {
+                    error.classList.remove('hidden');
+                }
+            } catch (e) {
+                alert("حدث خطأ في الاتصال بقاعدة البيانات");
+            } finally {
+                btn.innerText = "استعلام";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
