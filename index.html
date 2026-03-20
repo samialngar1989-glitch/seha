@@ -3,157 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام منصة صحة المتكامل - الربط التلقائي</title>
+    <title>منصة صحة - استعلام الإجازات المرضية</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Cairo:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        body { margin: 0; padding: 0; overflow-x: hidden; font-family: 'Cairo', sans-serif; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
         .page-hidden { display: none !important; }
+        .btn-blue { background-color: #3267b2; color: white; transition: 0.3s; }
+        .btn-blue:hover { background-color: #254d85; }
         
-        /* تقرير الطباعة */
+        /* تنسيق النتائج ليطابق الصورة */
+        .result-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .info-item { border-bottom: 1px solid #f1f5f9; padding: 10px 0; text-align: center; }
+        .info-label { color: #1e293b; font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .info-value { color: #64748b; font-size: 15px; }
+
+        /* تنسيق التقرير للطباعة */
         #printablePage { 
-            width: 210mm; height: 297mm; margin: 0 auto;
-            background-image: url('https://i.imgur.com/your-template-image.png'); /* يمكنك وضع رابط خلفية التقرير هنا */
-            background-size: 100% 100%; background-repeat: no-repeat;
-            position: relative; padding-top: 60mm; background-color: white;
+            width: 210mm; height: 297mm; margin: 0 auto; background: white; padding-top: 50mm; position: relative;
         }
-        .seha-table { width: 100%; border-collapse: collapse; border: 1.5px solid #cbd5e1; table-layout: fixed; background: rgba(255,255,255,0.9); }
-        .seha-table td { border: 1px solid #cbd5e1; padding: 8px; font-size: 12px; height: 11mm; color: #2b4c7e; vertical-align: middle; font-weight: 700; text-align: center; }
-        .label-en { font-family: 'Ubuntu', sans-serif; text-align: left !important; color: #4b74a3; font-weight: 400; width: 20%; }
-        .label-ar { width: 20%; text-align: right !important; }
-        .row-navy { background-color: #002349 !important; } .row-navy td { color: white !important; }
-        .row-gray { background-color: #f2f4f7; }
+        .seha-table { width: 90%; margin: 0 auto; border-collapse: collapse; border: 1px solid #cbd5e1; }
+        .seha-table td { border: 1px solid #cbd5e1; padding: 10px; font-size: 12px; text-align: center; font-weight: bold; color: #002349; }
+        .row-navy { background-color: #002349 !important; color: white !important; }
         
-        .left-footer-section { position: absolute; bottom: 25mm; left: 15mm; width: 45%; display: flex; flex-direction: column; align-items: center; }
-        .qr-img { width: 35mm; height: 35mm; margin-bottom: 8px; }
-        
-        .btn-blue { background-color: #3267b2; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: 700; transition: 0.3s; }
-        
-        @media print { .no-print { display: none !important; } #printablePage { display: block !important; margin: 0; padding-top: 50mm; } }
+        @media print { .no-print { display: none !important; } #printablePage { display: block !important; } }
     </style>
 </head>
-<body class="bg-slate-50">
+<body>
 
-    <div id="setupPage" class="no-print py-10 px-4 min-h-screen">
-        <div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
-            <div class="text-center mb-8">
-                <i class="fa-solid fa-house-medical text-5xl text-blue-600 mb-4"></i>
-                <h2 class="text-2xl font-black text-slate-800">بوابة استعلام منصة صحة</h2>
-                <p class="text-slate-500 text-sm">أدخل البيانات لجلب التقرير من الجدول</p>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">رمز الإجازة</label>
-                    <input type="text" id="qService" placeholder="مثال: 112233" class="w-full p-3 bg-slate-50 border rounded-xl text-center text-blue-800 font-bold focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">رقم الهوية</label>
-                    <input type="text" id="qId" placeholder="مثال: 40105" class="w-full p-3 bg-slate-50 border rounded-xl text-center text-blue-800 font-bold focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                
-                <button onclick="fetchDataFromSheet()" id="fetchBtn" class="btn-blue mt-6 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass"></i> استعلام وجلب البيانات
+    <div id="portalPage" class="no-print">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-50">
+            <img src="https://upload.wikimedia.org/wikipedia/ar/2/23/Seha_Logo.png" alt="Seha" class="h-12">
+            <i class="fa-solid fa-bars text-blue-800 text-2xl cursor-pointer"></i>
+        </header>
+
+        <main class="max-w-lg mx-auto px-4 py-10 text-center">
+            <h1 class="text-3xl font-bold text-blue-800 mb-4">الإجازات المرضية</h1>
+            <p class="text-gray-500 text-sm mb-8 leading-relaxed">خدمة الاستعلام عن الإجازات المرضية تتيح لك الاستعلام عن حالة طلبك للإجازة ويمكنك طباعتها عن طريق تطبيق صحتي</p>
+
+            <div id="queryForm" class="space-y-4">
+                <input type="text" id="qService" placeholder="رمز الخدمة" class="w-full p-4 border rounded-lg text-center focus:ring-2 focus:ring-blue-500 outline-none">
+                <input type="text" id="qId" placeholder="رقم الهوية / الإقامة" class="w-full p-4 border rounded-lg text-center focus:ring-2 focus:ring-blue-500 outline-none">
+                <button onclick="fetchData()" id="searchBtn" class="btn-blue w-full py-4 rounded-lg font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                    <span>استعلام</span>
                 </button>
             </div>
 
-            <div id="statusMsg" class="mt-4 text-center text-sm font-bold hidden"></div>
-        </div>
+            <div id="queryResult" class="page-hidden mt-8 text-center animate-fade-in">
+                <div class="result-card">
+                    <div class="flex flex-col gap-2 mb-6">
+                        <span class="text-gray-400 font-mono" id="resServiceDisp"></span>
+                        <span class="text-gray-400 font-mono" id="resIdDisp"></span>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">الاسم</div>
+                        <div class="info-value" id="resName"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">تاريخ إصدار تقرير الإجازة</div>
+                        <div class="info-value" id="resIssue"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">تبدأ من</div>
+                        <div class="info-value" id="resStart"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">وحتى</div>
+                        <div class="info-value" id="resEnd"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">المدة بالأيام</div>
+                        <div class="info-value" id="resDays"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">اسم الطبيب</div>
+                        <div class="info-value" id="resDoc"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">المسمى الوظيفي</div>
+                        <div class="info-value" id="resPos"></div>
+                    </div>
+
+                    <div class="mt-8 space-y-3">
+                        <button onclick="prepareAndPrint()" class="btn-blue w-full py-4 rounded-lg font-bold">طباعة التقرير الرسمي</button>
+                        <button onclick="location.reload()" class="w-full py-3 text-blue-600 font-bold">استعلام جديد</button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <div id="printablePage" class="page-hidden">
-        <div style="padding: 0 15mm;">
-            <table class="seha-table">
-                <tr><td class="label-ar">رمز الإجازة</td><td colspan="2" id="outLeaveId" style="font-family: 'Ubuntu';"></td><td class="label-en">Leave ID</td></tr>
-                <tr class="row-navy"><td class="label-ar">مدة الإجازة</td><td id="outDurAr"></td><td id="outDurEn" style="font-family: 'Ubuntu';"></td><td class="label-en">Leave Duration</td></tr>
-                <tr><td class="label-ar">تاريخ اصدار التقرير</td><td colspan="2" id="outIssue" style="font-family: 'Ubuntu';"></td><td class="label-en">Issue Date</td></tr>
-                <tr class="row-gray"><td class="label-ar">الاسم</td><td id="outNameAr"></td><td id="outNameEn" class="uppercase" style="font-family: 'Ubuntu';"></td><td class="label-en">Name</td></tr>
-                <tr><td class="label-ar">رقم الهوية/الإقامة</td><td colspan="2" id="outId" class="text-lg" style="font-family: 'Ubuntu';"></td><td class="label-en">National ID</td></tr>
-                <tr class="row-gray"><td class="label-ar">اسم الطبيب المعالج</td><td id="outDocAr"></td><td id="outDocEn" class="italic" style="font-family: 'Ubuntu';"></td><td class="label-en">Physician Name</td></tr>
-                <tr><td class="label-ar">المسمى الوظيفي</td><td id="outPosAr"></td><td id="outPosEn" class="italic" style="font-family: 'Ubuntu';"></td><td class="label-en">Position</td></tr>
-            </table>
+        <table class="seha-table">
+            <tr><td width="20%">رمز الإجازة</td><td colspan="2" id="outLeaveId"></td><td width="20%">Leave ID</td></tr>
+            <tr class="row-navy"><td>مدة الإجازة</td><td id="outDurAr"></td><td id="outDurEn"></td><td>Duration</td></tr>
+            <tr><td>الاسم</td><td id="outNameAr"></td><td id="outNameEn"></td><td>Name</td></tr>
+            <tr><td>رقم الهوية</td><td colspan="2" id="outId"></td><td>National ID</td></tr>
+            <tr><td>تاريخ الإصدار</td><td colspan="2" id="outIssueDate"></td><td>Issue Date</td></tr>
+            <tr><td>الطبيب</td><td id="outDocAr"></td><td id="outDocEn"></td><td>Physician</td></tr>
+        </table>
+        <div style="position:absolute; bottom:30mm; left:20mm; text-align:center;">
+            <img id="qrImg" src="" style="width:35mm;">
+            <p style="font-size:10px; margin-top:5px;">للتحقق من صحة التقرير<br>www.seha.sa</p>
         </div>
-        
-        <div class="left-footer-section">
-            <img id="qrImg" src="" class="qr-img">
-            <div class="text-center text-[10px] text-slate-700 leading-tight">
-                للتحقق من بيانات التقرير يرجى زيارة موقع منصة صحة الرسمي<br>
-                <span class="font-bold underline">www.seha.sa/#inquiries</span>
-            </div>
-        </div>
-        
-        <button onclick="window.print()" class="no-print fixed bottom-20 right-5 bg-blue-600 text-white p-4 rounded-full shadow-xl">طباعة التقرير 🖨️</button>
-        <button onclick="location.reload()" class="no-print fixed bottom-5 right-5 bg-slate-800 text-white p-4 rounded-full shadow-xl">استعلام جديد</button>
     </div>
 
     <script>
-        async function fetchDataFromSheet() {
-            const serviceId = document.getElementById('qService').value;
-            const nationalId = document.getElementById('qId').value;
-            const statusMsg = document.getElementById('statusMsg');
-            const btn = document.getElementById('fetchBtn');
+        const sheetId = "1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg";
+        let globalData = null; // لحفظ البيانات المسترجعة
 
-            if (!serviceId || !nationalId) {
-                alert("يرجى إدخال كافة البيانات أولاً");
+        async function fetchData() {
+            const leaveIdInput = document.getElementById('qService').value;
+            const nationalIdInput = document.getElementById('qId').value;
+            const btn = document.getElementById('searchBtn');
+
+            if (!leaveIdInput || !nationalIdInput) {
+                alert("الرجاء إدخال رمز الخدمة ورقم الهوية");
                 return;
             }
 
-            statusMsg.classList.remove('hidden', 'text-red-600', 'text-blue-600');
-            statusMsg.classList.add('text-blue-600');
-            statusMsg.innerText = "جاري الاتصال بالجدول...";
             btn.disabled = true;
-
-            const sheetId = "1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg";
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
 
             try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
                 const response = await fetch(url);
                 const text = await response.text();
                 const json = JSON.parse(text.substr(47).slice(0, -2));
                 const rows = json.table.rows;
 
-                // البحث عن الصف المطابق (العمود 0 هو LeaveID والعمود 1 هو NationalID)
+                // البحث (العمود A هو LeaveID والعمود B هو NationalID)
                 const foundRow = rows.find(row => 
-                    row.c[0] && row.c[0].v.toString() === serviceId && 
-                    row.c[1] && row.c[1].v.toString() === nationalId
+                    row.c[0] && row.c[0].v.toString() === leaveIdInput && 
+                    row.c[1] && row.c[1].v.toString() === nationalIdInput
                 );
 
                 if (foundRow) {
-                    // تعبئة البيانات في التقرير
-                    document.getElementById('outLeaveId').innerText = foundRow.c[0].v;
-                    document.getElementById('outId').innerText = foundRow.c[1].v;
-                    document.getElementById('outNameAr').innerText = foundRow.c[2].v;
-                    document.getElementById('outNameEn').innerText = foundRow.c[3] ? foundRow.c[3].v : "SAMI MOHAMMED";
-                    document.getElementById('outDurAr').innerText = foundRow.c[4] ? foundRow.c[4].v : "1 يوم";
-                    document.getElementById('outDurEn').innerText = "1 Day";
-                    document.getElementById('outIssue').innerText = new Date().toLocaleDateString('en-GB');
-                    document.getElementById('outDocAr').innerText = "شرف الدين عباس";
-                    document.getElementById('outDocEn').innerText = "Sharaf Al-Din";
-                    document.getElementById('outPosAr').innerText = "استشاري";
-                    document.getElementById('outPosEn').innerText = "Consultant";
+                    globalData = {
+                        leaveId: foundRow.c[0].v,
+                        natId: foundRow.c[1].v,
+                        nameAr: foundRow.c[2].v,
+                        nameEn: foundRow.c[3] ? foundRow.c[3].v : "Sami Mohammed",
+                        issueDate: "2026-03-20", // تاريخ اليوم تلقائي
+                        start: foundRow.c[4] ? foundRow.c[4].v : "2026-03-20",
+                        end: foundRow.c[5] ? foundRow.c[5].v : "2026-03-20",
+                        days: foundRow.c[6] ? foundRow.c[6].v : "1",
+                        doc: "ياسين عبد الحفيظ بوجان",
+                        pos: "طبيب عام"
+                    };
 
-                    // توليد QR Code
-                    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href + "?id=" + serviceId)}`;
-
-                    // إظهار صفحة التقرير
-                    document.getElementById('setupPage').classList.add('page-hidden');
-                    document.getElementById('printablePage').classList.remove('page-hidden');
+                    displayResult();
                 } else {
-                    statusMsg.innerText = "عذراً، لم يتم العثور على بيانات مطابقة.";
-                    statusMsg.classList.add('text-red-600');
+                    alert("بيانات الاستعلام غير صحيحة، يرجى التأكد من الرمز ورقم الهوية.");
                     btn.disabled = false;
+                    btn.innerText = "استعلام";
                 }
             } catch (error) {
-                console.error(error);
-                statusMsg.innerText = "خطأ في الاتصال. تأكد من نشر الجدول للويب.";
-                statusMsg.classList.add('text-red-600');
+                alert("حدث خطأ في الاتصال بالبيانات");
                 btn.disabled = false;
+                btn.innerText = "استعلام";
             }
+        }
+
+        function displayResult() {
+            document.getElementById('queryForm').classList.add('page-hidden');
+            document.getElementById('queryResult').classList.remove('page-hidden');
+            
+            document.getElementById('resServiceDisp').innerText = globalData.leaveId;
+            document.getElementById('resIdDisp').innerText = globalData.natId;
+            document.getElementById('resName').innerText = globalData.nameAr;
+            document.getElementById('resIssue').innerText = globalData.issueDate;
+            document.getElementById('resStart').innerText = globalData.start;
+            document.getElementById('resEnd').innerText = globalData.end;
+            document.getElementById('resDays').innerText = globalData.days;
+            document.getElementById('resDoc').innerText = globalData.doc;
+            document.getElementById('resPos').innerText = globalData.pos;
+        }
+
+        function prepareAndPrint() {
+            // تعبئة صفحة التقرير المخفية
+            document.getElementById('outLeaveId').innerText = globalData.leaveId;
+            document.getElementById('outId').innerText = globalData.natId;
+            document.getElementById('outNameAr').innerText = globalData.nameAr;
+            document.getElementById('outNameEn').innerText = globalData.nameEn;
+            document.getElementById('outDurAr').innerText = globalData.days + " يوم";
+            document.getElementById('outDurEn').innerText = globalData.days + " Day";
+            document.getElementById('outIssueDate').innerText = globalData.issueDate;
+            document.getElementById('outDocAr').innerText = globalData.doc;
+            document.getElementById('outDocEn').innerText = "Yassin Bojan";
+            
+            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}`;
+
+            // أمر الطباعة
+            window.print();
         }
     </script>
 </body>
