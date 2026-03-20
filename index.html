@@ -3,46 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صحة - نظام الاستعلام الذكي</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+    <title>منصة صحة - استعلام عن إجازة مرضية</title>
     <style>
-        :root { --seha-blue: #2c5ba7; }
-        body { font-family: 'Cairo', sans-serif; background-color: white; }
-        .page-section { display: none; }
-        .active { display: block; }
-        
-        /* تصميم التقرير للطباعة */
-        #printablePage { 
-            width: 210mm; height: 297mm; margin: 0 auto;
-            background-image: url('https://lh3.googleusercontent.com/d/1CKQiU4AqhKnHQ-TthWxfupVcgtV3zQyj');
-            background-size: 100% 100%; position: relative; padding-top: 60mm;
-        }
-        .seha-table { width: 90%; margin: 0 auto; border-collapse: collapse; border: 1px solid #cbd5e1; }
-        .seha-table td { border: 1px solid #cbd5e1; padding: 10px; font-size: 12px; font-weight: bold; color: #2b4c7e; text-align: center; }
-        .bg-navy { background-color: #002349; color: white !important; }
-
-        @media print {
-            .no-print { display: none !important; }
-            #printablePage { display: block !important; margin: 0; shadow: none; }
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f7; text-align: center; padding: 20px; direction: rtl; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 400px; }
+        h2 { color: #0056b3; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { background-color: #007bff; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 25px; padding: 15px; border-radius: 8px; font-size: 18px; display: none; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
 
-    <div id="searchPage" class="page-section active no-print">
-        <header class="p-6 flex justify-between items-center shadow-sm">
-            <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" class="h-16">
-            <div class="text-blue-600 text-2xl">☰</div>
-        </header>
+    <div class="container">
+        <h2>منصة صحة</h2>
+        <p>استعلم عن بيانات الإجازة المرضية</p>
+        <input type="number" id="natId" placeholder="أدخل رقم الهوية">
+        <input type="number" id="leaveId" placeholder="أدخل رمز الإجازة">
+        <button onclick="checkData()">استعلام الآن</button>
+        <div id="result"></div>
+    </div>
 
-        <main class="max-w-md mx-auto mt-16 px-6 text-center">
-            <h1 class="text-3xl font-bold text-[#2c5ba7] mb-4">الإجازات المرضية</h1>
-            <p class="text-gray-500 text-sm mb-10">استعلم عن حالة إجازتك المرضية من خلال إدخال البيانات التالية</p>
-            
-            <div class="space-y-4">
-                <input type="text" id="inputLeaveID" placeholder="رمز الخدمة (Leave ID)" class="w-full p-4 border rounded-xl text-right outline-none focus:border-blue-500">
-                <input type="text" id="inputNationalID" placeholder="رقم الهوية / الإقامة" class="w-full p-4 border rounded-xl text-right outline-none focus:border-blue-500">
+    <script>
+        async function checkData() {
+            const natId = document.getElementById('natId').value;
+            const leaveId = document.getElementById('leaveId').value;
+            const resDiv = document.getElementById('result');
+
+            if (!natId || !leaveId) {
+                showResult("يرجى إدخال كافة البيانات", "error");
+                return;
+            }
+
+            resDiv.style.display = "block";
+            resDiv.innerHTML = "جاري البحث عن البيانات...";
+            resDiv.className = "";
+
+            // رابط الجدول الخاص بك بصيغة JSON
+            const sheetId = "1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg";
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+
+                let foundRow = rows.find(row => 
+                    row.c[0] && row.c[0].v.toString() === leaveId && 
+                    row.c[1] && row.c[1].v.toString() === natId
+                );
+
+                if (foundRow) {
+                    const name = foundRow.c[2] ? foundRow.c[2].v : "غير مسجل";
+                    showResult(`تم العثور على الإجازة باسم:<br><strong>${name}</strong>`, "success");
+                } else {
+                    showResult("عذراً، البيانات المدخلة غير صحيحة أو غير موجودة.", "error");
+                }
+            } catch (error) {
+                showResult("حدث خطأ في الاتصال بالبيانات. تأكد من نشر الجدول للويب.", "error");
+            }
+        }
+
+        function showResult(message, type) {
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = "block";
+            resDiv.className = type;
+            resDiv.innerHTML = message;
+        }
+    </script>
+</body>
+</html>
                 <button onclick="searchInSheets()" id="searchBtn" class="w-full bg-[#3267b2] text-white p-4 rounded-xl font-bold text-lg hover:bg-blue-800 transition-all">استعلام</button>
                 <p id="errorMsg" class="text-red-500 text-sm hidden">عذراً، لم يتم العثور على بيانات مطابقة.</p>
             </div>
