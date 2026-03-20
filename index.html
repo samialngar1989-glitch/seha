@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام منصة صحة المتكامل - الربط التلقائي</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Cairo:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body { margin: 0; padding: 0; overflow-x: hidden; font-family: 'Cairo', sans-serif; }
+        .page-hidden { display: none !important; }
+        
+        /* تقرير الطباعة */
+        #printablePage { 
+            width: 210mm; height: 297mm; margin: 0 auto;
+            background-image: url('https://i.imgur.com/your-template-image.png'); /* يمكنك وضع رابط خلفية التقرير هنا */
+            background-size: 100% 100%; background-repeat: no-repeat;
+            position: relative; padding-top: 60mm; background-color: white;
+        }
+        .seha-table { width: 100%; border-collapse: collapse; border: 1.5px solid #cbd5e1; table-layout: fixed; background: rgba(255,255,255,0.9); }
+        .seha-table td { border: 1px solid #cbd5e1; padding: 8px; font-size: 12px; height: 11mm; color: #2b4c7e; vertical-align: middle; font-weight: 700; text-align: center; }
+        .label-en { font-family: 'Ubuntu', sans-serif; text-align: left !important; color: #4b74a3; font-weight: 400; width: 20%; }
+        .label-ar { width: 20%; text-align: right !important; }
+        .row-navy { background-color: #002349 !important; } .row-navy td { color: white !important; }
+        .row-gray { background-color: #f2f4f7; }
+        
+        .left-footer-section { position: absolute; bottom: 25mm; left: 15mm; width: 45%; display: flex; flex-direction: column; align-items: center; }
+        .qr-img { width: 35mm; height: 35mm; margin-bottom: 8px; }
+        
+        .btn-blue { background-color: #3267b2; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-size: 18px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+        
+        @media print { .no-print { display: none !important; } #printablePage { display: block !important; margin: 0; padding-top: 50mm; } }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <div id="setupPage" class="no-print py-10 px-4 min-h-screen">
+        <div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
+            <div class="text-center mb-8">
+                <i class="fa-solid fa-house-medical text-5xl text-blue-600 mb-4"></i>
+                <h2 class="text-2xl font-black text-slate-800">بوابة استعلام منصة صحة</h2>
+                <p class="text-slate-500 text-sm">أدخل البيانات لجلب التقرير من الجدول</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">رمز الإجازة</label>
+                    <input type="text" id="qService" placeholder="مثال: 112233" class="w-full p-3 bg-slate-50 border rounded-xl text-center text-blue-800 font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">رقم الهوية</label>
+                    <input type="text" id="qId" placeholder="مثال: 40105" class="w-full p-3 bg-slate-50 border rounded-xl text-center text-blue-800 font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                
+                <button onclick="fetchDataFromSheet()" id="fetchBtn" class="btn-blue mt-6 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i> استعلام وجلب البيانات
+                </button>
+            </div>
+
+            <div id="statusMsg" class="mt-4 text-center text-sm font-bold hidden"></div>
+        </div>
+    </div>
+
+    <div id="printablePage" class="page-hidden">
+        <div style="padding: 0 15mm;">
+            <table class="seha-table">
+                <tr><td class="label-ar">رمز الإجازة</td><td colspan="2" id="outLeaveId" style="font-family: 'Ubuntu';"></td><td class="label-en">Leave ID</td></tr>
+                <tr class="row-navy"><td class="label-ar">مدة الإجازة</td><td id="outDurAr"></td><td id="outDurEn" style="font-family: 'Ubuntu';"></td><td class="label-en">Leave Duration</td></tr>
+                <tr><td class="label-ar">تاريخ اصدار التقرير</td><td colspan="2" id="outIssue" style="font-family: 'Ubuntu';"></td><td class="label-en">Issue Date</td></tr>
+                <tr class="row-gray"><td class="label-ar">الاسم</td><td id="outNameAr"></td><td id="outNameEn" class="uppercase" style="font-family: 'Ubuntu';"></td><td class="label-en">Name</td></tr>
+                <tr><td class="label-ar">رقم الهوية/الإقامة</td><td colspan="2" id="outId" class="text-lg" style="font-family: 'Ubuntu';"></td><td class="label-en">National ID</td></tr>
+                <tr class="row-gray"><td class="label-ar">اسم الطبيب المعالج</td><td id="outDocAr"></td><td id="outDocEn" class="italic" style="font-family: 'Ubuntu';"></td><td class="label-en">Physician Name</td></tr>
+                <tr><td class="label-ar">المسمى الوظيفي</td><td id="outPosAr"></td><td id="outPosEn" class="italic" style="font-family: 'Ubuntu';"></td><td class="label-en">Position</td></tr>
+            </table>
+        </div>
+        
+        <div class="left-footer-section">
+            <img id="qrImg" src="" class="qr-img">
+            <div class="text-center text-[10px] text-slate-700 leading-tight">
+                للتحقق من بيانات التقرير يرجى زيارة موقع منصة صحة الرسمي<br>
+                <span class="font-bold underline">www.seha.sa/#inquiries</span>
+            </div>
+        </div>
+        
+        <button onclick="window.print()" class="no-print fixed bottom-20 right-5 bg-blue-600 text-white p-4 rounded-full shadow-xl">طباعة التقرير 🖨️</button>
+        <button onclick="location.reload()" class="no-print fixed bottom-5 right-5 bg-slate-800 text-white p-4 rounded-full shadow-xl">استعلام جديد</button>
+    </div>
+
+    <script>
+        async function fetchDataFromSheet() {
+            const serviceId = document.getElementById('qService').value;
+            const nationalId = document.getElementById('qId').value;
+            const statusMsg = document.getElementById('statusMsg');
+            const btn = document.getElementById('fetchBtn');
+
+            if (!serviceId || !nationalId) {
+                alert("يرجى إدخال كافة البيانات أولاً");
+                return;
+            }
+
+            statusMsg.classList.remove('hidden', 'text-red-600', 'text-blue-600');
+            statusMsg.classList.add('text-blue-600');
+            statusMsg.innerText = "جاري الاتصال بالجدول...";
+            btn.disabled = true;
+
+            const sheetId = "1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg";
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+
+                // البحث عن الصف المطابق (العمود 0 هو LeaveID والعمود 1 هو NationalID)
+                const foundRow = rows.find(row => 
+                    row.c[0] && row.c[0].v.toString() === serviceId && 
+                    row.c[1] && row.c[1].v.toString() === nationalId
+                );
+
+                if (foundRow) {
+                    // تعبئة البيانات في التقرير
+                    document.getElementById('outLeaveId').innerText = foundRow.c[0].v;
+                    document.getElementById('outId').innerText = foundRow.c[1].v;
+                    document.getElementById('outNameAr').innerText = foundRow.c[2].v;
+                    document.getElementById('outNameEn').innerText = foundRow.c[3] ? foundRow.c[3].v : "SAMI MOHAMMED";
+                    document.getElementById('outDurAr').innerText = foundRow.c[4] ? foundRow.c[4].v : "1 يوم";
+                    document.getElementById('outDurEn').innerText = "1 Day";
+                    document.getElementById('outIssue').innerText = new Date().toLocaleDateString('en-GB');
+                    document.getElementById('outDocAr').innerText = "شرف الدين عباس";
+                    document.getElementById('outDocEn').innerText = "Sharaf Al-Din";
+                    document.getElementById('outPosAr').innerText = "استشاري";
+                    document.getElementById('outPosEn').innerText = "Consultant";
+
+                    // توليد QR Code
+                    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href + "?id=" + serviceId)}`;
+
+                    // إظهار صفحة التقرير
+                    document.getElementById('setupPage').classList.add('page-hidden');
+                    document.getElementById('printablePage').classList.remove('page-hidden');
+                } else {
+                    statusMsg.innerText = "عذراً، لم يتم العثور على بيانات مطابقة.";
+                    statusMsg.classList.add('text-red-600');
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error(error);
+                statusMsg.innerText = "خطأ في الاتصال. تأكد من نشر الجدول للويب.";
+                statusMsg.classList.add('text-red-600');
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
