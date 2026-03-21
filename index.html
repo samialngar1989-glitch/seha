@@ -1,1 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صحة - الإجازات المرضية</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --partner-background-blue: #3267b2; 
+        }
 
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'GE SS Two', 'GE SS Two Medium', 'Cairo', sans-serif; 
+            background-color: #ffffff; 
+            overflow-x: hidden; 
+            color: #2c5ba7; 
+        }
+
+        .white-seha-logo { filter: brightness(0) invert(1); }
+
+        .header {
+            position: fixed; top: 0; right: 0; width: 100%; height: 110px;
+            background-color: #fff; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; box-sizing: border-box;
+        }
+        .logo img { height: 95px; width: auto; }
+
+        .menu-icon { cursor: pointer; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; height: 16px; width: 30px; }
+        .menu-icon span { display: block; width: 100%; height: 3px; background-color: #3498db; border-radius: 2px; }
+
+        .sidenav {
+            height: 100%; width: 0; position: fixed; z-index: 2000;
+            top: 0; left: 0; background-color: #fff;
+            overflow-x: hidden; transition: 0.5s; padding-top: 60px;
+            display: flex; flex-direction: column; text-align: center;
+        }
+        .sidenav .big-side-logo { height: 160px; width: auto; margin-bottom: 30px; }
+        .sidenav a { padding: 18px; text-decoration: none; font-size: 20px; color: #2c5ba7; display: block; border-bottom: 1px solid #f5f5f5; font-weight: 600; }
+        .close-btn { position: absolute; top: 15px; right: 25px; font-size: 45px; color: #3498db; cursor: pointer; line-height: 1; }
+
+        .login-btn-container { width: 100%; padding: 30px 20px; box-sizing: border-box; margin-top: auto; }
+        .login-btn { 
+            width: 100%; 
+            background-color: var(--partner-background-blue); 
+            color: white; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 20px; 
+            cursor: pointer; 
+            transition: background 0.3s;
+            font-family: inherit;
+            font-weight: 600;
+        }
+        .login-btn:hover { background-color: #2c5ba7; }
+
+        .main-content { margin-top: 110px; }
+
+        /* التحكم في عرض الصفحات */
+        #results-page { display: none; }
+
+        .section-form { padding: 40px 20px; text-align: center; max-width: 600px; margin: 0 auto; }
+        .form-title { font-size: 32px; font-weight: 700; margin-bottom: 15px; color: #2c5ba7; }
+        .form-desc { font-size: 15px; color: #888; margin-bottom: 40px; line-height: 1.6; }
+        
+        .form-group input { 
+            width: 100%; padding: 16px; margin-bottom: 15px; 
+            border: 1px solid #e0e0e0; border-radius: 8px; 
+            box-sizing: border-box; text-align: right; 
+            font-size: 16px; color: #2c5ba7;
+            font-family: inherit;
+        }
+
+        .btn-blue { 
+            background-color: var(--partner-background-blue); color: white; border: none; 
+            width: 100%; padding: 15px; border-radius: 8px; font-size: 18px; 
+            cursor: pointer; margin-bottom: 12px; font-weight: 700; 
+            transition: background 0.3s;
+            font-family: inherit;
+        }
+        .btn-blue:hover { background-color: #2c5ba7; }
+        
+        .btn-outline { 
+            background-color: transparent; color: var(--partner-background-blue); 
+            border: 1px solid var(--partner-background-blue); width: 100%; 
+            padding: 13px; border-radius: 8px; font-size: 16px; cursor: pointer; 
+            transition: background 0.3s;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        /* تنسيقات النتائج */
+        .result-container { text-align: center; margin-top: 20px; }
+        .result-row { margin-bottom: 20px; }
+        .result-label { font-weight: 700; color: #000000; display: block; margin-bottom: 5px; font-size: 16px; }
+        .result-value { color: #555; font-size: 17px; display: block; margin-bottom: 10px; }
+
+        .section-blue-info { background-color: var(--partner-background-blue); color: white; padding: 80px 20px; text-align: center; }
+        .hero-logo img { height: 180px; margin-bottom: 35px; }
+        .blue-desc { font-size: 16px; line-height: 1.8; max-width: 500px; margin: 0 auto 50px; }
+        .menu-title { font-size: 22px; font-weight: 700; margin-bottom: 30px; border-bottom: 4px solid #fff; display: inline-block; padding-bottom: 10px; }
+        .blue-links a { display: block; color: white; text-decoration: none; padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.2); width: 85%; margin: 0 auto; font-size: 18px; }
+
+        .section-footer { background-color: var(--partner-background-blue); color: white; padding: 50px 25px 40px; text-align: right; }
+        .contact-header-container { text-align: center; margin-bottom: 35px; }
+        .contact-header { font-size: 22px; font-weight: 700; border-bottom: 4px solid #fff; display: inline-block; padding-bottom: 10px; }
+        .footer-flex-container { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+        .contact-info { font-size: 14px; line-height: 2; flex: 1; }
+        .work-hours { font-size: 11px; white-space: nowrap; opacity: 0.9; margin: 10px 0; }
+        .side-partners img { height: 120px; width: auto; display: block; margin-top: -15px; } 
+        .social-icons { margin-top: 15px; font-size: 24px; display: flex; justify-content: flex-start; gap: 20px; padding-right: 5px; }
+        .social-icons a { color: white; text-decoration: none; }
+        .footer-bottom { font-size: 14px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; text-align: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" alt="صحة">
+        </div>
+        <div class="menu-icon" onclick="openNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <div id="sideNav" class="sidenav">
+        <span class="close-btn" onclick="closeNav()">×</span>
+        <div style="margin: 40px 0;">
+            <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" class="big-side-logo" alt="شعار صحة كبير">
+        </div>
+        <a href="#" onclick="showQueryPage()">الرئيسية</a>
+        <a href="#">الخدمات</a>
+        <a href="#" onclick="showQueryPage()">الاستعلامات</a>
+        <a href="#">الأسئلة الشائعة</a>
+        <a href="#">تواصل معنا</a>
+        <div class="login-btn-container">
+            <button class="login-btn">تسجيل الدخول</button>
+        </div>
+    </div>
+
+    <main class="main-content">
+        
+        <section id="query-page" class="section-form">
+            <h1 class="form-title">الإجازات المرضية</h1>
+            <p class="form-desc">خدمة الاستعلام عن الإجازات المرضية تتيح لك الاستعلام عن حالة طلبك للإجازة ويمكنك طباعتها عن طريق تطبيق صحتي</p>
+            <div class="form-group">
+                <input type="text" id="serviceCode" placeholder="رمز الخدمة">
+                <input type="text" id="idNumber" placeholder="رقم الهوية / الإقامة">
+                <button class="btn-blue" onclick="fetchData()">استعلام</button>
+                <button class="btn-outline">رجوع للاستعلامات</button>
+            </div>
+        </section>
+
+        <section id="results-page" class="section-form">
+            <h1 class="form-title">الإجازات المرضية</h1>
+            <p class="form-desc">خدمة الاستعلام عن الإجازات المرضية تتيح لك الاستعلام عن حالة طلبك للإجازة ويمكنك طباعتها عن طريق تطبيق صحتي</p>
+            
+            <div class="result-container">
+                <div class="form-group">
+                    <input type="text" id="res-service-code" placeholder="رمز الخدمة" disabled>
+                    <input type="text" id="res-id-number" placeholder="رقم الهوية / الإقامة" disabled>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">الاسم</label>
+                    <div class="result-value" id="res-name">جارٍ التحميل...</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">تاريخ اصدار التقرير الإجازة</label>
+                    <div class="result-value" id="res-issue-date">-</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">تبدا من</label>
+                    <div class="result-value" id="res-start-date">-</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">وحتى</label>
+                    <div class="result-value" id="res-end-date">-</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">المدة بالايام</label>
+                    <div class="result-value" id="res-duration">-</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">إسم الطبيب</label>
+                    <div class="result-value" id="res-doctor">-</div>
+                </div>
+
+                <div class="result-row">
+                    <label class="result-label">المسمى الوظيفي</label>
+                    <div class="result-value" id="res-job">-</div>
+                </div>
+
+                <button class="btn-blue" onclick="showQueryPage()">استعلام جديد</button>
+            </div>
+        </section>
+
+        <section class="section-blue-info">
+            <div class="hero-logo">
+                <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" class="white-seha-logo" alt="صحة أبيض">
+            </div>
+            <p class="blue-desc">منصة صحة تخدم جميع المنشآت الطبية من خلال تقديم الخدمات الصحية إلكترونياً لجميع المنشآت الطبية وتسعى إلى توحيد وأتمتة الإجراءات والخدمات.</p>
+            <h3 class="menu-title">القائمة الرئيسية</h3>
+            <div class="blue-links">
+                <a href="#">الخدمات</a>
+                <a href="#">الاستعلامات</a>
+                <a href="#">الأسئلة الشائعة</a>
+                <a href="#">تواصل معنا</a>
+            </div>
+        </section>
+
+        <section class="section-footer">
+            <div class="contact-header-container">
+                <h3 class="contact-header">تواصل معنا</h3>
+            </div>
+            <div class="footer-flex-container">
+                <div class="contact-info">
+                    <div><i class="fa-solid fa-phone"></i> 920002005</div>
+                    <div><i class="fa-solid fa-envelope"></i> support@seha.sa</div>
+                    <div class="work-hours">أوقات العمل: الأحد حتى الخميس 8 ص - 11 م</div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a> 
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a> 
+                    </div>
+                </div>
+                <div class="side-partners">
+                    <img src="https://lh3.googleusercontent.com/u/0/d/1LiMXZf6w_dnA9V6ar1BbZcpPluDCDyHx" alt="شعار لين ووزارة الصحة">
+                </div>
+            </div>
+            <div class="footer-bottom">
+                جميع الحقوق محفوظة لمنصة صحة © 2026 <br>
+                سياسة الخصوصية | دليل الاستخدام
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function openNav() { document.getElementById("sideNav").style.width = "100%"; }
+        function closeNav() { document.getElementById("sideNav").style.width = "0"; }
+
+        function showQueryPage() {
+            document.getElementById('query-page').style.display = 'block';
+            document.getElementById('results-page').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        async function fetchData() {
+            const serviceCode = document.getElementById('serviceCode').value;
+            const idNumber = document.getElementById('idNumber').value;
+            
+            if(!serviceCode || !idNumber) {
+                alert("يرجى إدخال كافة البيانات");
+                return;
+            }
+
+            // إظهار صفحة النتائج وتعبئة المدخلات العلوية
+            document.getElementById('res-service-code').value = serviceCode;
+            document.getElementById('res-id-number').value = idNumber;
+            document.getElementById('query-page').style.display = 'none';
+            document.getElementById('results-page').style.display = 'block';
+            window.scrollTo(0,0);
+
+            // رابط جوجل شيت (بصيغة CSV لجلب البيانات برمجياً)
+            const sheetUrl = "https://docs.google.com/spreadsheets/d/1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg/gviz/tq?tqx=out:csv";
+
+            try {
+                const response = await fetch(sheetUrl);
+                const data = await response.text();
+                const rows = data.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '')));
+
+                // البحث عن الصف المطابق لرمز الخدمة ورقم الهوية
+                // نفترض: العمود 0 هو رمز الخدمة والعمود 1 هو رقم الهوية
+                const match = rows.find(r => r[0] === serviceCode && r[1] === idNumber);
+
+                if (match) {
+                    document.getElementById('res-name').innerText = match[2] || "-";
+                    document.getElementById('res-issue-date').innerText = match[3] || "-";
+                    document.getElementById('res-start-date').innerText = match[4] || "-";
+                    document.getElementById('res-end-date').innerText = match[5] || "-";
+                    document.getElementById('res-duration').innerText = match[6] || "-";
+                    document.getElementById('res-doctor').innerText = match[7] || "-";
+                    document.getElementById('res-job').innerText = match[8] || "-";
+                } else {
+                    document.getElementById('res-name').innerText = "بيانات غير صحيحة أو غير موجودة";
+                }
+            } catch (error) {
+                console.error("خطأ في جلب البيانات:", error);
+                document.getElementById('res-name').innerText = "حدث خطأ أثناء الاتصال بالقاعدة";
+            }
+        }
+    </script>
+</body>
+</html>
+ 
