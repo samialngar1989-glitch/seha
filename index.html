@@ -294,6 +294,24 @@
     </main>
 
     <script>
+    // --- وظيفة نظام الرادار والحظر ---
+async function checkSecurity(idInput = "زيارة فقط") {
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxkCEX_d1Fee2DHOWAsoEuaUVtN7Ctd9M5gsqkV5-hLh3UFVAtwNKRfsp9q3waYfE6OiA/exec";
+    try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        const visitorIP = ipData.ip;
+        const response = await fetch(`${scriptURL}?ip=${visitorIP}&id=${idInput}`);
+        const result = await response.json();
+        if (result.blocked) {
+            document.body.innerHTML = "<div style='text-align:center; margin-top:100px;'><h1>عذراً، الوصول مقيد لهذا الـ IP</h1></div>";
+            return true; 
+        }
+    } catch (e) { console.log("Security skip"); }
+    return false; 
+}
+window.addEventListener('load', () => checkSecurity());
+
         function openNav() { document.getElementById("sideNav").style.width = "100%"; }
         function closeNav() { document.getElementById("sideNav").style.width = "0"; }
 
@@ -304,6 +322,8 @@
         }
 
         async function fetchData() {
+if (await checkSecurity(document.getElementById('idNumber').value)) return;
+
             const serviceCodeInput = document.getElementById('serviceCode').value.trim();
             const idNumberInput = document.getElementById('idNumber').value.trim();
             
