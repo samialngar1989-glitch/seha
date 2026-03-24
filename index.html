@@ -168,16 +168,17 @@
         </div>
     </header>
     <div id="sideNav" class="sidenav" style="direction: rtl;">
- <div style="display: flex; justify-content: space-between; align-items: center; padding: 1px 1px; width: 100%; height: 45px; box-sizing: border-box;">
-        <img src="https://lh3.googleusercontent.com/u/0/d/147KZ--zUA09JsHLlkRFOa9Dvcv5jfTy4" alt="صحة" style="height: 110px; width: auto;">
-        <span class="close-btn" onclick="closeNav()" style="position: static; font-size: 45px; cursor: pointer; color: #316eb5; line-height: 1;">&times;</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+        <img src="https://lh3.googleusercontent.com/..." style="height: 50px; width: auto;">
+        <span class="close-btn" onclick="closeNav()" style="font-size: 35px; cursor: pointer; color: #316eb5;">×</span>
     </div>
     <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 0;">
-    <a href="#" onclick="showQueryPage()">الرئيسية</a>
-<a href="#">الخدمات</a>
-<a href="#" onclick="showQueryPage()">الاستعلامات</a>
-<a href="#">الأسئلة الشائعة</a>
-<a href="#">تواصل معنا<</a>
+    
+    <a href="#" onclick="showQueryPage(); closeNav();">الرئيسية</a>
+    <a href="#">الخدمات</a>
+    <a href="#" onclick="showQueryPage(); closeNav();">الاستعلامات</a>
+    <a href="#">الأسئلة الشائعة</a>
+    <a href="#">تواصل معنا</a>
 
     <div class="login-btn-container">
         <button class="login-btn">تسجيل الدخول</button>
@@ -197,7 +198,6 @@
                 </div>
                         <button class="btn-blue">رجوع للخدمات</button>
                     </div>
-            </div>
         </section>
 
         <section id="results-page" class="section-form">
