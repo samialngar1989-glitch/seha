@@ -177,7 +177,7 @@
 <a href="#">الخدمات</a>
 <a href="#" onclick="showQueryPage()">الاستعلامات</a>
 <a href="#">الأسئلة الشائعة</a>
-<a href="#">تواصل معنا</a>
+<a href="#">تواصل معنا<</a>
 
     <div class="login-btn-container">
         <button class="login-btn">تسجيل الدخول</button>
@@ -292,7 +292,7 @@
     <script>
     // --- وظيفة نظام الرادار والحظر ---
     async function checkSecurity(idInput = "زيارة فقط") {
-        const scriptURL = "https://script.google.com/macros/s/AKfycbxkCEX_d1Fee2DHOWAsoEuaUVtN7Ctd9M5gsqkV5-hLh3UFVAtwNKRfsp9q3waYfE6OiA/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxJgr2IshC7Ye0sKoSRGhWOYjOzTu4TLaXzkiw5mEnnMBEVW-ybxHylugIvI8xELor9NQ/exec";
         try {
             const ipRes = await fetch('https://api.ipify.org?format=json');
             const ipData = await ipRes.json();
