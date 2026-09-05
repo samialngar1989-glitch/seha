@@ -27,14 +27,14 @@
         .white-seha-logo { filter: brightness(0) invert(1); }
 
         .header {
-            position: fixed; top: 0; right: 0; width: 100%; height: 90px;
+            position: fixed; top: 0; right: 0; width: 100%; height: 80px;
             background-color: #fff; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; box-sizing: border-box;
+            padding: 0 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 1000; box-sizing: border-box;
         }
-        .logo img { height: 150px; width: auto; }
+        .logo img { height: 110px; width: auto;  padding: 0px -5px;}
 
-        .menu-icon { cursor: pointer; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; height: 16px; width: 30px; }
-        .menu-icon span { display: block; width: 100%; height: 3px; background-color: #3498db; border-radius: 2px; }
+        .menu-icon { cursor: pointer; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; height: 18px; width: 21px; }
+        .menu-icon span { display: block; width: 90%; height: 2.2px; background-color: #3498db; border-radius: 2px; }
 
         .sidenav {
             height: 100%; width: 0; position: fixed; z-index: 2000;
@@ -44,7 +44,19 @@
         }
         .sidenav .big-side-logo { height: 160px; width: auto; margin-bottom: 30px; }
         .sidenav a { padding: 8px; text-decoration: none; font-size: 18px; color: #2c5ba7; display: block; border-bottom: 1px solid #f5f5f5; font-weight: 600; }
-        .close-btn { position: absolute; top: 15px; right: 25px; font-size: 45px; color: #3498db; cursor: pointer; line-height: 1; }
+        .close-btn {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 10px; /* تحكم في حجم الرمز من هنا */
+    color: #ffffff;  /* لون الرمز */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: 0.3s;
+}
 
         .login-btn-container { width: 100%; padding: 30px 20px; box-sizing: border-box; margin-top: auto; }
         .login-btn { 
@@ -66,26 +78,27 @@
 
         /* التحكم في عرض الصفحات */
         #results-page { display: none; }
-        .section-form { padding: 0px 0px 300px; text-align: center; max-width: 600px; margin: 0 auto; }
+        .section-form { padding: 0px 0px 220px; text-align: center; max-width: 600px; margin: 0 auto; }
         .form-title { 
-            font-size: 34px; 
-            font-weight: 750; 
-            color: #2c5ba7; 
-            margin-bottom: 10px;
+            font-size: 35px; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+            color: #316EB5; 
+            margin-bottom: 14px;
             display: inline-block;
             /* الشطر السحري: جعل الخلفية بارتفاع 85% فقط من النص وتبدأ من الأعلى */
             background-image: linear-gradient(to left, 
                 transparent 15%, 
-                rgba(44, 91, 167, 0.10) 10%, 
-                rgba(44, 91, 167, 0.10) 85%, 
+                rgba(49, 110, 181, 0.1) 10%, 
+                rgba(49, 110, 181, 0.1) 85%, 
                 transparent 85%
             );
             background-repeat: no-repeat;
-            background-size: 100%85%; /* العرض 10%، والارتفاع 85% فقط */
+            background-size: 100%89%; /* العرض 10%، والارتفاع 85% فقط */
             background-position: top; /* الخلفية تلتصق بالأعلى وتترك فراغاً بالأسفل */
             
-            line-height: .8; /* الحفاظ على الارتفاع الدقيق مثل المحاولة السابقة */
-            padding: ; 
+            line-height: .6; /* الحفاظ على الارتفاع الدقيق مثل المحاولة السابقة */
+            padding: 0px; 
             vertical-align: middle;
         }
         /* تقليل المسافة البيضاء في صفحة النتائج فقط */
@@ -94,28 +107,38 @@
 }
 
         .form-desc {
-    font-size: 19px;
-    color: #888;
-    line-height: 1.6;
-    max-width: 450px;
-    margin: 0 auto 40px;
-    padding: 0 20px;
+    color: #7e8da3;
+    line-height: 1.5; /* مسافة مريحة بين السطرين */
+    
+    /* تحديد العرض */
+    width: 95%; 
+    font-size: 16px;
+max-width: 450px; /* لن يتجاوز هذا العرض ولن يقل عن 90% من الشاشة */
+    margin: 0 auto 20px;
     text-align: center;
-    display: block;
+
+    /* القفل السحري لمنع السطر الثالث */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* إجبار المتصفح على عرض سطرين فقط */
+    -webkit-box-orient: vertical;  
+    overflow: hidden; /* إخفاء أي كلمة تحاول النزول للسطر الثالث */
+    text-overflow: ellipsis; /* إضافة ثلاث نقاط (...) إذا تم قص نص زائد */
 }
+
 
         
         .form-group input { 
-            width: 90%; padding: 5px; margin-bottom: 15px; 
+            width: 90%; padding: 1px; margin-bottom: 16px; 
             border: 1px solid #e0e0e0; border-radius: 8px; 
             box-sizing: border-box; text-align: right; 
-    color:#000000 ; font-size: 20px;
+    color:#000000 ; font-size: 18px;
             font-family: inherit;
         }
+        
 
         .btn-blue { 
-            background-color: var(--partner-background-blue); color: rgba(240, 255, 240, 0.9); border: none; 
-            width: auto ; min-width: 150px; padding: 12px 30px; border-radius: 8px; font-size: 16px; 
+            background-color: var(--partner-background-blue); color: rgba(240, 255, 240, 1); border: none; 
+            width: 7 ;height: 30px; min-width: 150px; padding: 1px 2px; border-radius: 8px; font-size: 14px; 
             cursor: pointer; margin-bottom: 14px; font-weight: bold; 
             transition: background 0.3s;
             font-family: inherit;
@@ -130,29 +153,256 @@
             font-family: inherit;
             font-weight: 600;
         }
+        /* 1. تنسيق الكبسولة العائمة */
+.custom-fab-capsule {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    background-color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 50px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.custom-fab-capsule:hover { transform: scale(1.05); }
+
+.fab-circle-item {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* الدائرة الزرقاء */
+.chat-circle { background-color: #316eb5; }
+.chat-circle i { color: #ffffff; font-size: 18px; }
+
+/* الدائرة المعدنية (تأثير الكعكة الشعاعي المكثف) */
+.metal-circle {
+    background: conic-gradient(
+        from 0deg at 50% 50%,
+        #0a2b53 0deg, #79c0ff 25deg, #1c4e8e 50deg, #d1eaff 75deg,
+        #1c4e8e 100deg, #79c0ff 130deg, #0a2b53 160deg, #d1eaff 190deg,
+        #1c4e8e 220deg, #79c0ff 250deg, #0a2b53 280deg, #d1eaff 320deg, #1c4e8e 360deg
+    );
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 2. تنسيق نافذة الشروط (Modal) */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10001;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    width: 85%;
+    max-width: 450px;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: right;
+    direction: rtl;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 { margin-top: 0; color: #333; }
+.modal-content p { color: #666; font-size: 14px; line-height: 1.6; }
+
+.modal-buttons { display: flex; gap: 12px; margin-top: 25px; }
+
+.btn-start {
+    background: #316eb5; color: white; border: none;
+    padding: 12px; border-radius: 50px; flex: 2; cursor: pointer; font-weight: bold;
+}
+
+.btn-cancel {
+    background: #f0f0f0; color: #666; border: none;
+    padding: 12px; border-radius: 50px; flex: 1; cursor: pointer;
+}
+
 
         /* تنسيقات النتائج */
         .result-container { text-align: center; margin-top: 20px; }
         .result-row { margin-bottom: 20px; }
         .result-label { font-weight: 800; color: #000000; display: block; margin-bottom: 5px; font-size: 16px; }
         .result-value { color: #757575; font-weight: 700;font-size: 17px;  display: block; padding-top: 10px;padding-bottom: 10px; margin-bottom: 10px; }
-
         .section-blue-info { background-color: var(--partner-background-blue); color: white; padding: 0px 20px; text-align: center; }
         .hero-logo img { height: 180px; margin-bottom: 5px; }
-        .blue-desc { font-size: 16px; line-height: 1.8; max-width: 500px; margin: 0 auto 50px; }
-        .menu-title { font-size: 22px; font-weight: 700; margin-bottom: 30px; border-bottom: 4px solid #fff; display: inline-block; padding-bottom: 10px; }
-        .blue-links a { display: block; color: white; text-decoration: none; padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.2); width: 85%; margin: 0 auto; font-size: 18px; }
+       /* حاوية النتائج ذات الخلفية الرمادية */
+.results-card-box {
+    background-color: #F5F7FA;    /* لون رمادي فاتح واحترافي */
+    padding: 20px 20px 5px 20px;           /* مسافات داخلية */
+    margin: 15px 15px;            /* مسافة خارجية وتوسيط */
+    max-width: 90%;               /* لضمان التناسق على الموبايل */
+}
 
-        .section-footer { background-color: #316eb5; color: white; padding: 50px 25px 40px; text-align: right; }
-        .contact-header-container { text-align: center; margin-bottom: 35px; }
-        .contact-header { font-size: 22px; font-weight: 700; border-bottom: 4px solid #fff; display: inline-block; padding-bottom: 10px; }
-        .footer-flex-container { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
-        .contact-info { font-size: 14px; line-height: 2; flex: 1; }
-        .work-hours { font-size: 11px; white-space: nowrap; opacity: 0.9; margin: 10px 0; }
-        .side-partners img { height: 150px; width: auto; display: block; margin-top: -15px; } 
+/* لضمان عدم وجود مسافات زائدة داخل البطاقة */
+.results-card-box .result-row:last-child {
+    margin-bottom: 0;
+}
+
+ .blue-desc { font-size: 18px; line-height: 1.8; max-width: 500px;color: rgba(240, 255, 240, 0.9); margin: 0 auto 60px; }
+        .menu-title { 
+    font-size: 20px; 
+    font-weight: 700; 
+    margin-bottom: 30px; 
+    position: relative;    /* ضروري لتموضع الخط القصير */
+    display: inline-block; 
+    padding-bottom: 5px;  /* مسافة بين النص والخط */
+}
+
+/* هذا الجزء هو المسؤول عن رسم الخط القصير */
+.menu-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 25%;             /* يبدأ من جهة اليمين */
+    
+    width: 50%;           /* هنا تتحكم في طول الخط (اجعله 40% ليكون أقصر من الكلمة) */
+    
+    height: 3px;          /* سمك الخط */
+    background-color: rgba(240, 255, 240, 0.5); /* لون الخط (أبيض كما في كودك) */
+    border-radius: 2px;
+}
+        .blue-links a { display: block; color:white;  color: rgba(240, 255, 240, 0.9); text-decoration: none; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); width: 85%; margin: 0 auto; font-size: 14px; }
+
+        .section-footer {
+    background-color: #316eb5;
+    color: white;
+    padding: 40px 20px;
+    text-align: right;
+    direction: rtl;
+}
+        .contact-header-container { text-align: center; margin-bottom: 35px;}
+        .contact-header {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;    /* ضروري لتموضع الخط القصير */
+    display: inline-block; /* لجعل الخط تحت الكلمة فقط وليس بعرض الصفحة */
+    padding-bottom: 12px;  /* المسافة بين النص والخط */
+}
+
+/* رسم الخط القصير تحت "تواصل معنا" بنفس ستايل القائمة الرئيسية */
+.contact-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 30%;           /* لتوسيط الخط تحت الكلمة */
+    
+    width: 50%;           /* طول الخط (أقصر من الكلمة) */
+    
+    height: 3px;          /* سمك الخط */
+    background-color: rgba(240, 255, 240, 0.5); /* لون الخط أبيض متناسق مع الفوتر */
+    border-radius: 2px;
+}
+
+        .footer-flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: nowrap; /* يمنع التداخل */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.contact-info {
+    flex: 1;
+    font-size: 11px;
+    line-height: 2;
+    padding: 0px 1px;
+    color: rgba(240, 255, 240, 0.9); 
+}
+
+.contact-info div {
+    margin-bottom: 3px;
+    white-space: nowrap; /* يمنع انكسار الأرقام */
+}
+
+.side-partners {
+    flex: 0 0 auto;
+}
+
+.side-partners img {
+    height: 60px; /* حجم متناسق مع الأسطر */
+    width: auto;
+    max-width: 140px;
+    display: block;
+}
+
+        .contact-info i {
+    width: 14px;
+    color: transparent; -webkit-text-stroke: 1px white; margin-left: 10px;
+    text-align: center;
+    margin-left: 2px;
+}
+        .side-partners img { height: 100px; display: block; margin-top: -15px 10px; } 
         .social-icons { margin-top: 15px; font-size: 24px; display: flex; justify-content: flex-start; gap: 20px; padding-right: 5px; }
         .social-icons a { color: white; text-decoration: none; }
-        .footer-bottom { font-size: 14px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; text-align: center; margin-top: 30px; }
+        .footer-bottom { font-size: 14px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(240, 255, 240, 0.9); 
+padding-top: 40px; text-align: center; margin-top: 30px; }
+/* التحكم في سطر أوقات الدوام */
+.work-hours-text {
+    font-size: 10px;             /* حجم الخط */
+    color: rgba(255, 255, 255, 1); /* لون أبيض شفاف قليلاً */
+    margin-top: 20px;            /* المسافة العلوية عن أرقام التواصل */
+    line-height: 1.7;            /* ارتفاع السطر */
+    font-weight: 600;            /* سماكة الخط */
+    display: block;              /* لضمان أنه في سطر منفصل */
+}
+
+/* التحكم في حاوية أيقونات التواصل (X و يوتيوب) */
+/* التحكم في حاوية أيقونات التواصل */
+.social-media-wrapper {
+    margin-top: 30px;            
+    display: flex;
+    gap: 30px;                   /* المسافة بين الأيقونات */
+    justify-content: flex-start; 
+}
+
+/* إعادة ضبط الأيقونات لتكون بيضاء ممتلئة تماماً */
+.social-icon-item {
+    text-decoration: none;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.social-icon-item i {
+    color: #ffffff !important;   /* لون أبيض ممتلئ */
+    font-size: 20px;             /* حجم الأيقونة */
+    
+    /* إلغاء أي حدود سابقة قد تسبب التجويد */
+    -webkit-text-stroke: 0px transparent !important; 
+    
+    /* ضمان عدم وجود شفافية في قلب الأيقونة */
+    opacity: 1 !important;
+}
+
+/* تأثير بسيط عند تمرير الماوس */
+.social-icon-item:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+
+
     </style>
 </head>
 <body>
@@ -195,7 +445,7 @@
                 <input type="text" id="idNumber" placeholder="رقم الهوية / الإقامة">
                 <button class="btn-blue" onclick="fetchData()">استعلام</button>
                 </div>
-                        <button class="btn-blue">رجوع للخدمات</button>
+                        <button class="btn-blue">رجوع للاستعلامات</button>
                     </div>
             </div>
         </section>
@@ -204,17 +454,27 @@
             <h1 class="form-title">الإجازات المرضية</h1>
             <p class="form-desc">خدمة الاستعلام عن الإجازات المرضية تتيح لك الاستعلام عن حالة طلبك للإجازة ويمكنك طباعتها عن طريق تطبيق صحتي</p>
             
-            <div class="result-container">
                 <div class="form-group">
                     <input type="text" id="res-service-code" placeholder="رمز الخدمة" disabled>
                     <input type="text" id="res-id-number" placeholder="رقم الهوية / الإقامة" disabled>
                 </div>
-
+              <div class="results-card-box">
                 <div class="result-row">
                     <label class="result-label">الاسم:</label>
                     <div class="result-value" id="res-name">جارٍ التحميل...</div>
                 </div>
 
+               <div class="result-row" id="row-companion" style="display: none;">
+    <label class="result-label">اسم المرافق:</label>
+    <div class="result-value" id="res-companion-name"></div>
+</div>
+
+<div class="result-row" id="row-relation" style="display: none;">
+    <label class="result-label">صلة القرابة:</label>
+    <div class="result-value" id="res-relation"></div>
+</div>
+
+ 
                 <div class="result-row">
                     <label class="result-label">تاريخ اصدار تقرير الإجازة:</label>
                     <div class="result-value" id="res-issue-date">-</div>
@@ -244,9 +504,8 @@
                     <label class="result-label">المسمى الوظيفي:</label>
                     <div class="result-value" id="res-job">-</div>
                 </div>
-
+</div>
                 <button class="btn-blue" onclick="showQueryPage()">استعلام جديد</button>
-            </div>
         </section>
 
         <section class="section-blue-info">
@@ -272,14 +531,22 @@
                     <div><i class="fa-solid fa-phone"></i> 920002005</div>
                     <div><i class="fa-solid fa-envelope"></i> support@seha.sa</div>
                     <div><i class="fa-brands fa-whatsapp"></i> 920002005</div>
-                    <div class="work-hours">أوقات العمل: الأحد حتى الخميس 8 ص - 11 م</div>
-                    <div class="social-icons">
-                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a> 
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a> 
-                    </div>
-                </div>
+                    <span class="work-hours-text">
+        أوقات العمل: الأحد حتى الخميس 8 ص - 11 م
+    </span>
+    
+    <div class="social-media-wrapper">
+        
+        <a href="#" class="social-icon-item">
+            <i class="fa-brands fa-youtube"></i>
+        </a> 
+       <a href="#" class="social-icon-item">
+            <i class="fa-brands fa-x-twitter"></i>
+        </a>  
+    </div>
+</div>
                 <div class="side-partners">
-                    <img src="https://lh3.googleusercontent.com/u/0/d/1LiMXZf6w_dnA9V6ar1BbZcpPluDCDyHx" alt="شعار لين ووزارة الصحة">
+                    <img src="https://lh3.googleusercontent.com/u/0/d/1-DUApMHlYX27oHfAt_P5RLhV6FJllMZ9" alt="شعار لين ووزارة الصحة">
                 </div>
             </div>
             <div class="footer-bottom">
@@ -291,26 +558,49 @@
 
     <script>
 // 1. دالة الأمان (نظام الرادار والسجل)
-async function checkSecurity(idInput = "زيارة فقط") {
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxdROygukAbLYthgfQbvvTXNVBvTbDc1fSNc2o3KRN09ZEUsYpe_XfE96v7x01j1CJUZA/exec";
+async function checkSecurity(idInput) {
+    const sheetId = "1dJbaxOKHle4CiZIu0xVjaNJw2JgE5YZrpustJCcQ0dg";
+    // رابط جلب بيانات ورقة blacklist (العمود A)
+    const blacklistUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=blacklist`;
+    const logScriptURL = "https://script.google.com/macros/s/AKfycbxdROygukAbLYthgfQbvvTXNVBvTbDc1fSNc2o3KRN09ZEUsYpe_XfE96v7x01j1CJUZA/exec";
+
     try {
+        // جلب IP الزائر
         const ipRes = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipRes.json();
         const visitorIP = ipData.ip;
-        
-        // إرسال البيانات (IP ورقم الهوية) لجدول جوجل بنمط no-cors لضمان الوصول
-        fetch(`${scriptURL}?ip=${visitorIP}&id=${encodeURIComponent(idInput)}`, {
-            mode: 'no-cors',
-            method: 'GET'
-        });
-    } catch (e) { 
-        console.log("Security log failed"); 
-    }
-    return false; 
-}
 
-// 2. تشغيل نظام الأمان عند فتح الصفحة كزائر
-window.addEventListener('load', () => checkSecurity());
+        // جلب قائمة الحظر من الشيت
+        const blResponse = await fetch(blacklistUrl);
+        const blData = await blResponse.text();
+        
+        // تحويل بيانات العمود A لمصفوفة IPs
+        const blockedIPs = blData.split('\n').map(row => row.replace(/"/g, '').trim());
+
+        // التحقق من وجود الـ IP في القائمة
+        if (blockedIPs.includes(visitorIP)) {
+            alert("خطأ ‼️ لا يسمح لك بالاستعلام، تم حظر وصولك.");
+            // تدمير محتوى الصفحة للمحظور
+            document.body.innerHTML = `
+                <div style="text-align:center; margin-top:100px; font-family:'Cairo', sans-serif; direction:rtl;">
+                    <h1 style="color:red; font-size:50px;">خطأ ‼️</h1>
+                    <p style="font-size:20px; color:#2c5ba7;">عذراً، تم تقييد الوصول لهذه الخدمة من جهازك.</p>
+                </div>`;
+            return true; // نعم، المستخدم محظور
+        }
+
+        // إذا مسموح له، سجل العملية في الـ Log
+        if (idInput) {
+            fetch(`${logScriptURL}?ip=${visitorIP}&id=${encodeURIComponent(idInput)}`, {
+                mode: 'no-cors',
+                method: 'GET'
+            });
+        }
+    } catch (e) {
+        console.log("Security Check Error");
+    }
+    return false; // المستخدم مسموح له
+}
 
 // 3. دوال القائمة المنبثقة والتبديل بين الصفحات
 function openNav() { document.getElementById("sideNav").style.width = "100%"; }
@@ -332,10 +622,12 @@ async function fetchData() {
         return;
     }
 
-    // إرسال الهوية والـ IP لجدول جوجل (Log) عند الضغط على الزر
-    await checkSecurity(idNumberInput);
+    // انتظر حتى يتم التأكد من أن المستخدم غير محظور
+    const isBlocked = await checkSecurity(idNumberInput);
+    
+    if (isBlocked) return; // إذا كان محظوراً، توقف هنا فوراً
 
-    // الانتقال لصفحة النتائج
+    // إذا لم يكن محظوراً، استكمل كود عرض النتائج وجلب البيانات من الشيت
     document.getElementById('res-service-code').value = serviceCodeInput;
     document.getElementById('res-id-number').value = idNumberInput;
     document.getElementById('query-page').style.display = 'none';
@@ -348,14 +640,16 @@ async function fetchData() {
 
     try {
         const response = await fetch(sheetUrl);
-        const data = await response.text();
-        const rows = data.split('\n').map(row => 
+        const csvData = await response.text();
+        const rows = csvData.split('\n').map(row => 
             row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/"/g, '').trim())
         );
 
+        // البحث عن المطابقة
         const match = rows.find(r => r[1] === serviceCodeInput && r[2] === idNumberInput);
 
         if (match) {
+            // 1. البيانات الأساسية
             document.getElementById('res-name').innerText = match[3] || "-";
             document.getElementById('res-issue-date').innerText = match[4] || "-";
             document.getElementById('res-start-date').innerText = match[5] || "-";
@@ -363,18 +657,94 @@ async function fetchData() {
             document.getElementById('res-duration').innerText = match[7] || "-";
             document.getElementById('res-doctor').innerText = match[8] || "-";
             document.getElementById('res-job').innerText = match[9] || "-";
+
+            // 2. معالجة بيانات المرافق (K=10, L=11)
+            let companion = match[10] ? match[10].trim() : "";
+            let relation = match[11] ? match[11].trim() : "";
+
+            // إظهار أو إخفاء صف المرافق
+            const rowComp = document.getElementById('row-companion');
+            if (companion && companion !== "-" && companion !== "") {
+                document.getElementById('res-companion-name').innerText = companion;
+                rowComp.style.display = "block";
+            } else {
+                rowComp.style.display = "none";
+            }
+
+            // إظهار أو إخفاء صف القرابة
+            const rowRel = document.getElementById('row-relation');
+            if (relation && relation !== "-" && relation !== "") {
+                document.getElementById('res-relation').innerText = relation;
+                rowRel.style.display = "block";
+            } else {
+                rowRel.style.display = "none";
+            }
+
         } else {
+            // حالة عدم وجود نتيجة
             document.getElementById('res-name').innerText = "بيانات غير صحيحة أو غير موجودة";
             ['res-issue-date', 'res-start-date', 'res-end-date', 'res-duration', 'res-doctor', 'res-job'].forEach(id => {
                 document.getElementById(id).innerText = "-";
             });
+            document.getElementById('row-companion').style.display = "none";
+            document.getElementById('row-relation').style.display = "none";
         }
     } catch (error) {
+        console.error("Error:", error);
         document.getElementById('res-name').innerText = "حدث خطأ أثناء الاتصال بالقاعدة";
     }
 }
+// فتح نافذة الشروط عند الضغط على الكبسولة
+function showTerms() {
+    document.getElementById('termsModal').style.display = 'flex';
+}
+
+// إغلاق النافذة عند الضغط على إلغاء
+function closeTerms() {
+    document.getElementById('termsModal').style.display = 'none';
+}
+
+// إجراء زر ابدأ المحادثة
+function confirmAction() {
+    // الانتقال إلى الرابط المطلوب في نافذة جديدة
+    window.open('https://elevenlabs.io/conversational-ai', '_blank'); 
+    
+    // إغلاق نافذة الشروط بعد الانتقال
+    closeTerms();
+}
+
+
+// إغلاق النافذة عند الضغط خارجها
+window.onclick = function(event) {
+    let modal = document.getElementById('termsModal');
+    if (event.target == modal) {
+        closeTerms();
+    }
+}
+
 
 </script>
+<div class="custom-fab-capsule" onclick="showTerms()">
+    <div class="fab-circle-item chat-circle">
+        <i class="fa-solid fa-comment-dots"></i>
+    </div>
+    
+    <div class="fab-circle-item metal-circle"></div>
+</div>
+
+<div id="termsModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>الشروط والأحكام</h3>
+        <p>
+            يتم تسجيل وحفظ محتوى المحادثة وبيانات استخدامها لأغراض تشغيل الخدمة وتحسينها، وذلك وفقاً لشروط الاستخدام وسياسة الخصوصية المعتمدة في منصة صحة. تولّد ردود المساعد الرقمي آلياً، وهي مخصصة لتقديم معلومات عامة فقط، ولا تُعد استشارة طبية.
+        </p>
+        
+        <div class="modal-buttons">
+            <button onclick="closeTerms()" class="btn-cancel">إلغاء</button>
+            <button onclick="confirmAction()" class="btn-start">ابدأ المحادثة <i class="fa-solid fa-comment"></i></button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
